@@ -31,7 +31,3 @@ graph.add_edge(START, "chat_node")
 graph.add_edge("chat_node", END)
 
 workflow = graph.compile(checkpointer=checkpointer)
-
-initial_state = ChatState(messages=[HumanMessage(content="What is the capital of India?")])
-
-print(workflow.invoke(initial_state)["messages"][-1].content)
