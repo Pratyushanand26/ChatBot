@@ -3,10 +3,11 @@ from typing import TypedDict, Annotated
 from langchain_core.messages import BaseMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 import os
-from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph.message import add_messages
 from dotenv import load_dotenv
 from langchain.schema import HumanMessage
+import sqlite3
 
 load_dotenv()
 
@@ -23,7 +24,8 @@ def chat_node(state: ChatState):
     response = llm.invoke(messages)
     return {"messages": [response]}
 
-checkpointer = InMemorySaver()
+conn=sqlite3.connect(database="chatbot.db",check_same_thread=False)
+checkpointer = SqliteSaver(conn=conn)
 
 graph = StateGraph(ChatState)
 graph.add_node("chat_node", chat_node)
